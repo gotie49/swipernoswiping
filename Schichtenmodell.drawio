@@ -1,0 +1,100 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Seite-1" id="ACPi0q8HNJpyKpCTJgoC">
+    <mxGraphModel dx="783" dy="597" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="40" width="570" x="160" y="463" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="40" width="570" x="160" y="876" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="80" width="570" x="160" y="534" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-7" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="Next.JS + MapLibre GL JS" vertex="1">
+          <mxGeometry height="30" width="170" x="353" y="468" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-9" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Postgres + PostGIS" vertex="1">
+          <mxGeometry height="30" width="135" x="371.5" y="881" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="HTTP Handle Layer" vertex="1">
+          <mxGeometry height="30" width="120" x="160" y="533" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="AuthHandler" vertex="1">
+          <mxGeometry height="34" width="120" x="170" y="568" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-19" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="LocationHandler" vertex="1">
+          <mxGeometry height="34" width="120" x="310" y="568" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-20" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="ModerationHandler" vertex="1">
+          <mxGeometry height="34" width="120" x="455" y="568" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="FediverseHandler" vertex="1">
+          <mxGeometry height="34" width="120" x="600" y="568" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="80" width="570" x="160" y="651" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-23" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div&gt;Service Layer&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="120" x="146" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-24" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="AuthService" vertex="1">
+          <mxGeometry height="34" width="120" x="170" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="LocationService" vertex="1">
+          <mxGeometry height="34" width="120" x="310" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-26" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="ModerationService" vertex="1">
+          <mxGeometry height="34" width="120" x="455" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-27" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="FediverseService" vertex="1">
+          <mxGeometry height="34" width="120" x="600" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-28" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="80" width="570" x="160" y="761" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-29" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Repository Layer" vertex="1">
+          <mxGeometry height="30" width="120" x="155" y="761" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-30" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="UserRepository" vertex="1">
+          <mxGeometry height="34" width="120" x="170" y="795" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-31" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="LocationRepository" vertex="1">
+          <mxGeometry height="34" width="120" x="310" y="795" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-32" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;div&gt;Comment&amp;amp;Rating&lt;/div&gt;&lt;div&gt;Repository&lt;/div&gt;" vertex="1">
+          <mxGeometry height="34" width="120" x="455" y="795" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-33" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="FediverseRepository" vertex="1">
+          <mxGeometry height="34" width="120" x="600" y="795" as="geometry" />
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-35" edge="1" parent="1" source="4bF5AQuWvQnFD-HUFSlw-3" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="4bF5AQuWvQnFD-HUFSlw-6" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="480" y="710" as="sourcePoint" />
+            <mxPoint x="530" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-36" edge="1" parent="1" source="4bF5AQuWvQnFD-HUFSlw-6" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="4bF5AQuWvQnFD-HUFSlw-22" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="480" y="420" as="sourcePoint" />
+            <mxPoint x="480" y="451" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-37" edge="1" parent="1" source="4bF5AQuWvQnFD-HUFSlw-22" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="4bF5AQuWvQnFD-HUFSlw-28" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="470" y="630" as="sourcePoint" />
+            <mxPoint x="470" y="661" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4bF5AQuWvQnFD-HUFSlw-38" edge="1" parent="1" source="4bF5AQuWvQnFD-HUFSlw-28" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="470" y="740" as="sourcePoint" />
+            <mxPoint x="445" y="870" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
