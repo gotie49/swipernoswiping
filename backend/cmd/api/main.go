@@ -24,26 +24,23 @@ func main() {
 	}
 
 	queries := db.New(conn)
-	r := SetupAPI()
+	r, err := SetupAPI()
 
 	log.Println("Server running on 8080")
 	http.ListenAndServe(":8080", r)
 }
 
-
-func SetupAPI() {
+func SetupAPI() (chi.Router, error) {
 	r := chi.NewRouter()
 
-	r.Get("/locations", h.GetAllLocations)	
+	r.Get("/locations", h.GetAllLocations)
 	r.Post("/locations", h.CreateLocation)
 	r.Get("/locations/{id}", h.GetLocationByID)
 	r.Get("/locations/nearby", h.GetNearby)
-	
+
 	r.Get("/user", h.UserAuth)
 	r.Post("/user", h.UserCreate)
-	r.Delete("/user", h.UserDelete )
-	
-	r.
-	
-	return r
+	r.Delete("/user", h.UserDelete)
+
+	return r, nil
 }
