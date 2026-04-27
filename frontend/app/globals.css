@@ -20,7 +20,11 @@
 }
 
 body {
-  background: var(--background);
+  background-color: #e0e0e0;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
 }
