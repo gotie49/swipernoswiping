@@ -21,11 +21,20 @@ INSERT INTO locations (
   creator_user_id
 )
 VALUES (
-  $1, $2, $3,
-  ST_SetSRID(ST_MakePoint($4, $5), 4326),
-  $6, $7, $8,
-  $9,
-  $10
+  sqlc.arg(location_id),
+  sqlc.arg(name),
+  sqlc.arg(description),
+
+  ST_SetSRID(
+    ST_MakePoint(sqlc.arg(lng), sqlc.arg(lat)),
+    4326
+  ),
+
+  sqlc.arg(address),
+  sqlc.arg(location_type),
+  sqlc.arg(opening_hours),
+  sqlc.arg(status),
+  sqlc.arg(creator_user_id)
 )
 RETURNING *;
 
@@ -62,3 +71,10 @@ SELECT
 FROM locations
 WHERE geom && ST_MakeEnvelope($1, $2, $3, $4, 4326)
   AND status = 'active';
+
+-- name: ListLocations :many
+SELECT *
+FROM locations
+WHERE status = 'active'
+ORDER BY created_at DESC
+LIMIT $1 OFFSET $2;

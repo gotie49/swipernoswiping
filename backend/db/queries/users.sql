@@ -17,3 +17,8 @@ VALUES (
   $1, $2, $3, $4, NOW(), false, false
 )
 RETURNING *;
+
+-- name: GetUserIDByEmail :one
+SELECT user_id, email, password_hash
+FROM users
+WHERE email = $1;

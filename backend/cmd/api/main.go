@@ -7,13 +7,15 @@ import (
 	"os"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/gotie49/swipernoswiping/internal/db"
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	dbURL := os.Getenv("DATABASE_URL")
 
+	dbURL := os.Getenv("DATABASE_URL")
+	log.Println("DB URL:", dbURL)
 	conn, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal(err)
@@ -22,25 +24,46 @@ func main() {
 	if err := conn.Ping(); err != nil {
 		log.Fatal("DB not ready:", err)
 	}
-
 	queries := db.New(conn)
-	r, err := SetupAPI()
 
-	log.Println("Server running on 8080")
-	http.ListenAndServe(":8080", r)
+	h := NewHandler(queries)
+
+	r := SetupAPI(h)
+
+	log.Println("Server running on :8080")
+
+	err = http.ListenAndServe(":8080", r)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-func SetupAPI() (chi.Router, error) {
+func SetupAPI(h *Handler) http.Handler {
 	r := chi.NewRouter()
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000", "null"}, // change for prod
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}))
 
+	// PUBLIC ROUTES
 	r.Get("/locations", h.GetAllLocations)
-	r.Post("/locations", h.CreateLocation)
 	r.Get("/locations/{id}", h.GetLocationByID)
-	r.Get("/locations/nearby", h.GetNearby)
+	//r.Get("/locations/nearby", h.GetNearby)
 
-	r.Get("/user", h.UserAuth)
-	r.Post("/user", h.UserCreate)
-	r.Delete("/user", h.UserDelete)
+	r.Post("/user/register", h.UserCreate)
+	r.Post("/user/login", h.UserAuth)
 
-	return r, nil
+	// PROTECTED ROUTES
+	r.Group(func(protected chi.Router) {
+		protected.Use(AuthMiddleware)
+
+		protected.Post("/locations", h.CreateLocation)
+		//protected.Delete("/user", h.UserDelete)
+	})
+
+	return r
 }
