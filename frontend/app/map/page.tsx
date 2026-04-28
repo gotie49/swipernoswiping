@@ -1,13 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import MapWrapper from '@/components/MapWrapper'
+import MapWrapper from '@/components/map/MapWrapper'
 
 export default function MapPage() {
   const router = useRouter()
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+    /*<div style={{ position: 'relative', width: '100%', height: '100vh' }}>
       <div style={{
         position: 'absolute',
         top: 16,
@@ -36,7 +36,7 @@ export default function MapPage() {
         </button>
       </div>
 
-      <MapWrapper />
-    </div>
+    </div>*/
+    <MapWrapper />
   )
 }
