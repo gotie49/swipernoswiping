@@ -1,0 +1,126 @@
+.container {
+  padding: 4px 20px 40px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.typeBadge {
+  font-size: 12px;
+  background: #F3F4F6;
+  color: #6B7280;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.infoList {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.infoText {
+  margin: 0;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.description {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #374151;
+}
+
+.divider {
+  margin: 16px 0;
+  border: none;
+  border-top: 1px solid #F3F4F6;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ratingList {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ratingCard {
+  background: #F9FAFB;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.ratingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ratingUser {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.stars {
+  color: #F59E0B;
+  font-size: 14px;
+}
+
+.ratingComment {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.textarea {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  resize: none;
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.textarea:focus {
+  border-color: #3B82F6;
+}
+
+.submitButton {
+  margin-top: 8px;
+  width: 100%;
+  padding: 10px 0;
+  background: #3B82F6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.submitButton:hover {
+  opacity: 0.9;
+}

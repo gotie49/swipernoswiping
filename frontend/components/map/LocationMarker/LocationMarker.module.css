@@ -1,0 +1,11 @@
+.marker {
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.markerSelected {
+  border-width: 3px;
+}

@@ -1,7 +1,7 @@
 'use client'
-
 import { Marker } from '@vis.gl/react-maplibre'
-import type { Location} from '@/types/location'
+import type { Location } from '@/types/location'
+import styles from './LocationMarker.module.css'
 
 interface LocationMarkerProps {
   location: Location
@@ -17,15 +17,17 @@ const TYPE_COLORS: Record<string, string> = {
   shopping:   '#A855F7',
   culture:    '#EC4899',
 }
- 
+
 const DEFAULT_COLOR = '#6B7280'
- 
+
 function getColor(type: string | null): string {
   return type ? (TYPE_COLORS[type] ?? DEFAULT_COLOR) : DEFAULT_COLOR
 }
 
 export default function LocationMarker({ location, isSelected, onClick }: LocationMarkerProps) {
   const typeColor = getColor(location.location_type)
+  const size = isSelected ? 26 : 18
+
   return (
     <Marker
       longitude={location.geom.coordinates[0]}
@@ -37,18 +39,17 @@ export default function LocationMarker({ location, isSelected, onClick }: Locati
         onClick(location)
       }}
     >
-    <div style={{
-        width: isSelected ? 26: 18,
-        height: isSelected ? 26: 18,
-        borderRadius: '50%',
-        background: typeColor,
-        border: isSelected ? '3px solid white' : '2px solid white',
-        boxShadow: isSelected
-          ? `0 0 0 2px ${typeColor}, 0 2px 8px rgba(0,0,0,0.3)`
-          : '0 1px 4px rgba(0,0,0,0.3)',
-        cursor: 'pointer',
-        transition: 'all 0.15s ease',
-      }} />
+      <div
+        className={`${styles.marker} ${isSelected ? styles.markerSelected : ''}`}
+        style={{
+          width: size,
+          height: size,
+          background: typeColor,
+          boxShadow: isSelected
+            ? `0 0 0 2px ${typeColor}, 0 2px 8px rgba(0,0,0,0.3)`
+            : '0 1px 4px rgba(0,0,0,0.3)',
+        }}
+      />
     </Marker>
   )
 }
