@@ -10,10 +10,11 @@ interface SearchBarProps {
   locations: Location[]
   activeTypes: string[]
   onTypeToggle: (type: string) => void
+  onResetTypes: () => void
   onLocationSelect: (location: Location) => void
 }
 
-export default function SearchBar({ locations, activeTypes, onTypeToggle, onLocationSelect }: SearchBarProps) {
+export default function SearchBar({ locations, activeTypes, onTypeToggle, onResetTypes, onLocationSelect }: SearchBarProps) {
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -39,6 +40,7 @@ export default function SearchBar({ locations, activeTypes, onTypeToggle, onLoca
           onTypeToggle={onTypeToggle}
           locations={locations}
           activeTypes={activeTypes}
+          onResetTypes={onResetTypes}
           onSelect={handleLocationSelect}
           onClose={() => setSearchOpen(false)}
         />
@@ -48,6 +50,7 @@ export default function SearchBar({ locations, activeTypes, onTypeToggle, onLoca
         <BurgerMenu
           activeTypes={activeTypes}
           onTypeToggle={onTypeToggle}
+          onResetTypes={onResetTypes}
           onClose={() => setMenuOpen(false)}
         />
       )}

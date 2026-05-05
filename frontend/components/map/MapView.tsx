@@ -40,6 +40,10 @@ export default function MapView() {
     )
   }
 
+  function handleResetTypes() {
+    setActiveTypes([])
+  }
+
   function handleLocationSelect(location: Location) {
     setSelectedLocation(location)
   }
@@ -76,6 +80,7 @@ export default function MapView() {
         locations={DUMMY_LOCATIONS}
         activeTypes={activeTypes}
         onTypeToggle={handleTypeToggle}
+        onResetTypes={handleResetTypes}
         onLocationSelect={handleLocationSelect}
       />
 

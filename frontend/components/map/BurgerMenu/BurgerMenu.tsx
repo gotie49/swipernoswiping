@@ -1,10 +1,12 @@
 'use client'
+
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
 import { MdClose, MdLogin, MdLogout } from 'react-icons/md'
 import styles from './BurgerMenu.module.css'
 
 const LOCATION_TYPES = [
+  { key: 'alle',       label: 'Alle',       color: '#111827' },
   { key: 'cafe',       label: 'Café',       color: '#F59E0B' },
   { key: 'restaurant', label: 'Restaurant', color: '#EF4444' },
   { key: 'park',       label: 'Natur',      color: '#22C55E' },
@@ -16,10 +18,11 @@ const LOCATION_TYPES = [
 interface BurgerMenuProps {
   activeTypes: string[]
   onTypeToggle: (type: string) => void
+  onResetTypes: () => void
   onClose: () => void
 }
 
-export default function BurgerMenu({ activeTypes, onTypeToggle, onClose }: BurgerMenuProps) {
+export default function BurgerMenu({ activeTypes, onTypeToggle, onResetTypes, onClose }: BurgerMenuProps) {
   const { user, logout } = useUser()
   const router = useRouter()
 
@@ -36,7 +39,6 @@ export default function BurgerMenu({ activeTypes, onTypeToggle, onClose }: Burge
   return (
     <>
       <div className={styles.backdrop} onClick={onClose} />
-
       <div className={styles.panel} onClick={e => e.stopPropagation()}>
 
         {/* Header */}
@@ -59,11 +61,14 @@ export default function BurgerMenu({ activeTypes, onTypeToggle, onClose }: Burge
         <p className={styles.sectionLabel}>Kategorien</p>
         <div className={styles.tagList}>
           {LOCATION_TYPES.map(type => {
-            const isActive = activeTypes.includes(type.key)
+            const isActive = type.key === 'alle'
+              ? activeTypes.length === 0
+              : activeTypes.includes(type.key)
+
             return (
               <button
                 key={type.key}
-                onClick={() => onTypeToggle(type.key)}
+                onClick={() => type.key === 'alle' ? onResetTypes() : onTypeToggle(type.key)}
                 className={styles.tag}
                 style={{
                   borderColor: type.color,
@@ -90,7 +95,6 @@ export default function BurgerMenu({ activeTypes, onTypeToggle, onClose }: Burge
             : <><MdLogin size={18} /> Anmelden</>
           }
         </button>
-
       </div>
     </>
   )

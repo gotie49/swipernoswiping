@@ -10,11 +10,12 @@ interface SearchViewProps {
   locations: Location[]
   activeTypes: string[]
   onTypeToggle: (type: string) => void
+  onResetTypes: () => void
   onSelect: (location: Location) => void
   onClose: () => void
 }
 
-export default function SearchView({ locations, activeTypes, onTypeToggle, onSelect, onClose }: SearchViewProps) {
+export default function SearchView({ locations, activeTypes, onTypeToggle, onResetTypes, onSelect, onClose }: SearchViewProps) {
   const [query, setQuery] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -87,6 +88,7 @@ export default function SearchView({ locations, activeTypes, onTypeToggle, onSel
         <BurgerMenu
           activeTypes={activeTypes}
           onTypeToggle={onTypeToggle}
+          onResetTypes={onResetTypes}
           onClose={() => setMenuOpen(false)}
         />
       )}
