@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
+import { MdArrowBack } from 'react-icons/md'
 import Input from '@/components/ui/Input/Input'
 import Button from '@/components/ui/Button/Button'
 import styles from './LoginPage.module.css'
@@ -71,6 +72,21 @@ export default function LoginPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
+        <button
+        onClick={() => router.push('/map')}
+        style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#374151',
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: 16,
+            padding: 0,
+        }}
+        >
+        <MdArrowBack size={22} />
+        </button>
         <h1 className={styles.title}>Anmelden</h1>
         <p className={styles.subtitle}>
           Melde dich an um Orte zu bewerten und zu kommentieren.

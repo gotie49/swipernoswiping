@@ -6,6 +6,7 @@ import { useUser } from '@/context/UserContext'
 import Button from '@/components/ui/Button/Button'
 import Input from '@/components/ui/Input/Input'
 import styles from './RegisterPage.module.css'
+import { MdArrowBack } from 'react-icons/md'
 
 export default function RegisterPage() {
   const { login } = useUser()
@@ -72,6 +73,22 @@ export default function RegisterPage() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
+
+        <button
+        onClick={() => router.push('/map')}
+        style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#374151',
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: 16,
+            padding: 0,
+        }}
+        >
+        <MdArrowBack size={22} />
+        </button>
         <h1 className={styles.title}>Registrieren</h1>
         <p className={styles.subtitle}>
           Erstelle ein Konto um Orte zu bewerten und zu kommentieren.

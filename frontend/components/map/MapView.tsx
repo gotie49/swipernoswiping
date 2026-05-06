@@ -2,17 +2,19 @@
 
 import * as React from 'react'
 import { useState, useMemo, useEffect } from 'react'
+import { MdAdd } from 'react-icons/md'
+import { useRouter } from 'next/navigation'
 import { Map, useMap } from '@vis.gl/react-maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Location } from '@/types/location'
 import LocationMarker from '@/components/map/LocationMarker/LocationMarker'
 import LocationSheet from '@/components/map/LocationSheet/LocationSheet'
 import SearchBar from '@/components/map/SearchBar/SearchBar'
+import FilterBar from '@/components/map/FilterBar/FilterBar'
 import { DUMMY_LOCATIONS } from '@/data/dummyLocations'
 
 function FlyToHandler({ location }: { location: Location | null }) {
   const { current: map } = useMap()
-
   useEffect(() => {
     if (!map || !location) return
     map.flyTo({
@@ -21,11 +23,11 @@ function FlyToHandler({ location }: { location: Location | null }) {
       duration: 800,
     })
   }, [location, map])
-
   return null
 }
 
 export default function MapView() {
+  const router = useRouter()
   const [viewState, setViewState] = useState({
     longitude: 10.0010,
     latitude: 53.5050,
@@ -65,7 +67,6 @@ export default function MapView() {
         onClick={() => setSelectedLocation(null)}
       >
         <FlyToHandler location={selectedLocation} />
-
         {visibleLocations.map(location => (
           <LocationMarker
             key={location.location_id}
@@ -83,6 +84,35 @@ export default function MapView() {
         onResetTypes={handleResetTypes}
         onLocationSelect={handleLocationSelect}
       />
+
+      <FilterBar
+        activeTypes={activeTypes}
+        onTypeToggle={handleTypeToggle}
+        onResetTypes={handleResetTypes}
+      />
+      {/* FAB — Ort hinzufügen */}
+      <button
+        onClick={() => router.push('/add-location')}
+        style={{
+          position: 'absolute',
+          bottom: 32,
+          right: 20,
+          width: 56,
+          height: 56,
+          borderRadius: '50%',
+          background: '#111827',
+          color: 'white',
+          border: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+          cursor: 'pointer',
+          zIndex: 20,
+        }}
+      >
+        <MdAdd size={28} />
+      </button>
 
       <LocationSheet
         location={selectedLocation}
