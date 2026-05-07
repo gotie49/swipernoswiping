@@ -1,0 +1,24 @@
+.button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #9CA3AF;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.button:hover {
+  color: #EF4444;
+  border-color: #EF4444;
+}
+
+.reported {
+  font-size: 13px;
+  color: #22C55E;
+  margin: 0;
+}

@@ -1,24 +1,14 @@
 'use client'
+
 import type { Location } from '@/types/location'
 import { MdLocationOn, MdAccessTime } from 'react-icons/md'
+import RatingSection from '../RatingSection/RatingSection'
+import CommentSection from '../CommentSection/CommentSection'
+import ReportButton from '../ReportButton/ReportButton'
 import styles from './LocationDetail.module.css'
 
 interface LocationDetailProps {
   location: Location
-}
-
-const EXAMPLE_RATINGS = [
-  { user: 'Anna K.', stars: 5, comment: 'Absolut empfehlenswert, sehr schöner Ort!' },
-  { user: 'Max M.', stars: 4, comment: 'Schöne Atmosphäre, kann ich nur empfehlen.' },
-  { user: 'Julia S.', stars: 3, comment: 'Ganz okay, aber zur Stoßzeit sehr voll.' },
-]
-
-function Stars({ count }: { count: number }) {
-  return (
-    <span className={styles.stars}>
-      {'★'.repeat(count)}{'☆'.repeat(5 - count)}
-    </span>
-  )
 }
 
 export default function LocationDetail({ location }: LocationDetailProps) {
@@ -55,31 +45,17 @@ export default function LocationDetail({ location }: LocationDetailProps) {
       <hr className={styles.divider} />
 
       {/* Bewertungen */}
-      <strong className={styles.sectionTitle}>Bewertungen</strong>
-      <div className={styles.ratingList}>
-        {EXAMPLE_RATINGS.map((r, i) => (
-          <div key={i} className={styles.ratingCard}>
-            <div className={styles.ratingHeader}>
-              <span className={styles.ratingUser}>{r.user}</span>
-              <Stars count={r.stars} />
-            </div>
-            <p className={styles.ratingComment}>{r.comment}</p>
-          </div>
-        ))}
-      </div>
+      <RatingSection locationId={location.location_id} />
 
       <hr className={styles.divider} />
 
-      {/* Kommentar */}
-      <strong className={styles.sectionTitle}>Kommentar hinterlassen</strong>
-      <textarea
-        placeholder="Dein Kommentar..."
-        rows={3}
-        className={styles.textarea}
-      />
-      <button className={styles.submitButton}>
-        Absenden
-      </button>
+      {/* Kommentare */}
+      <CommentSection locationId={location.location_id} />
+
+      <hr className={styles.divider} />
+
+      {/* Ort melden */}
+      <ReportButton locationId={location.location_id} />
 
     </div>
   )

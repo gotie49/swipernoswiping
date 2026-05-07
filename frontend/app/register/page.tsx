@@ -73,7 +73,6 @@ export default function RegisterPage() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-
         <button
         onClick={() => router.push('/map')}
         style={{

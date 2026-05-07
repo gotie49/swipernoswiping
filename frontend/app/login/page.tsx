@@ -60,7 +60,7 @@ export default function LoginPage() {
     await new Promise(resolve => setTimeout(resolve, 500))
 
     if (email === 'test@test.de' && password === '1234') {
-      login('dummy-token-123', { user_id: '1', name: 'Test User', email })
+      login('dummy-token-123', { user_id: '1', name: 'Test User', email, role: 'moderator' })
       router.push('/map')
     } else {
       setError('E-Mail oder Passwort falsch')

@@ -90,29 +90,6 @@ export default function MapView() {
         onTypeToggle={handleTypeToggle}
         onResetTypes={handleResetTypes}
       />
-      {/* FAB — Ort hinzufügen */}
-      <button
-        onClick={() => router.push('/add-location')}
-        style={{
-          position: 'absolute',
-          bottom: 32,
-          right: 20,
-          width: 56,
-          height: 56,
-          borderRadius: '50%',
-          background: '#111827',
-          color: 'white',
-          border: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
-          cursor: 'pointer',
-          zIndex: 20,
-        }}
-      >
-        <MdAdd size={28} />
-      </button>
 
       <LocationSheet
         location={selectedLocation}

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
-import { MdClose, MdLogin, MdLogout } from 'react-icons/md'
+import { MdClose, MdLogin, MdLogout, MdAddLocation, MdAdminPanelSettings } from 'react-icons/md'
 import styles from './BurgerMenu.module.css'
 
 const LOCATION_TYPES = [
@@ -83,18 +83,36 @@ export default function BurgerMenu({ activeTypes, onTypeToggle, onResetTypes, on
         </div>
 
         <div className={styles.spacer} />
-
-        {/* Auth Button */}
-        <button
-          onClick={handleAuthAction}
-          className={styles.authButton}
-          style={{ background: user ? '#EF4444' : '#111827' }}
-        >
-          {user
-            ? <><MdLogout size={18} /> Abmelden</>
-            : <><MdLogin size={18} /> Anmelden</>
-          }
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {user?.role === 'moderator' && (
+            <button
+              onClick={() => { router.push('/moderation'); onClose() }}
+              className={styles.authButton}
+              style={{ background: '#7C3AED' }}
+            >
+              <MdAdminPanelSettings size={18} /> Moderation
+            </button>
+          )}
+          {user && (
+            <button
+              onClick={() => { router.push('/add-location'); onClose() }}
+              className={styles.authButton}
+              style={{ background: '#1D4ED8' }}
+            >
+              <MdAddLocation size={18} /> Ort hinzufügen
+            </button>
+          )}
+          <button
+            onClick={handleAuthAction}
+            className={styles.authButton}
+            style={{ background: user ? '#EF4444' : '#111827' }}
+          >
+            {user
+              ? <><MdLogout size={18} /> Abmelden</>
+              : <><MdLogin size={18} /> Anmelden</>
+            }
+          </button>
+        </div>
       </div>
     </>
   )

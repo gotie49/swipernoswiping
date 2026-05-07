@@ -1,0 +1,134 @@
+.container {
+  min-height: 100vh;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: #111827;
+}
+
+.content {
+  flex: 1;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.locationIcon {
+  width: 44px;
+  height: 44px;
+  background: #FEF3C7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.locationName {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.submittedBy {
+  font-size: 13px;
+  color: #9CA3AF;
+  margin: 0;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #F3F4F6;
+  margin: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fieldLabel {
+  font-size: 12px;
+  color: #9CA3AF;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fieldValue {
+  font-size: 15px;
+  color: #111827;
+  margin: 0;
+}
+
+.descriptionBox {
+  background: #F9FAFB;
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid #F3F4F6;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid #F3F4F6;
+  background: white;
+}
+
+.approveBtn,
+.rejectBtn {
+  flex: 1;
+  padding: 14px 0;
+  border-radius: 99px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid;
+}
+
+.approveBtn {
+  background: #22C55E;
+  color: white;
+  border-color: #22C55E;
+}
+
+.rejectBtn {
+  background: white;
+  color: #EF4444;
+  border-color: #EF4444;
+}

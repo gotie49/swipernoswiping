@@ -1,0 +1,97 @@
+.container {
+  margin-top: 8px;
+  background: #FEF2F2;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #FECACA;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.reasonList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.reasonBtn,
+.reasonBtnActive {
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.reasonBtn {
+  background: white;
+  border: 1px solid #E5E7EB;
+  color: #374151;
+}
+
+.reasonBtnActive {
+  background: #EF4444;
+  border: 1px solid #EF4444;
+  color: white;
+}
+
+.textarea {
+  padding: 8px 10px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  color: #111827;
+  background: white;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.backBtn {
+  flex: 1;
+  padding: 8px 0;
+  background: white;
+  color: #6B7280;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitBtn {
+  flex: 2;
+  padding: 8px 0;
+  background: #EF4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitBtn:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.successMsg {
+  font-size: 13px;
+  color: #22C55E;
+  margin: 0;
+}
