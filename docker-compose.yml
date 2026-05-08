@@ -11,27 +11,53 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   migrate:
     image: migrate/migrate
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: on-failure
     volumes:
-      - ./migrations:/migrations
+      - ./backend/migrations:/migrations
     command:
       [
         "-path=/migrations",
         "-database=postgres://postgres:postgres@db:5432/app?sslmode=disable",
         "up"
       ]
+
   api:
-    build: .
+    build: ./backend
     container_name: app-api
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/app?sslmode=disable
     ports:
       - "8080:8080"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: app-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      API_URL: http://api:8080
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    depends_on:
+      - api
     restart: unless-stopped
 
 volumes:
