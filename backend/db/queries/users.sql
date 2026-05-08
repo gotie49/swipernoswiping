@@ -19,6 +19,11 @@ VALUES (
 RETURNING *;
 
 -- name: GetUserIDByEmail :one
-SELECT user_id, email, password_hash
+SELECT user_id, email, is_moderator, password_hash
 FROM users
 WHERE email = $1;
+
+-- name: DeleteUser :exec
+UPDATE users
+SET is_deleted = true
+WHERE user_id = $1;

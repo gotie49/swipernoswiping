@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -54,6 +55,17 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const deleteUser = `-- name: DeleteUser :exec
+UPDATE users
+SET is_deleted = true
+WHERE user_id = $1
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteUser, userID)
+	return err
+}
+
 const getUser = `-- name: GetUser :one
 SELECT user_id, username, email, password_hash, created_at, is_moderator, is_deleted
 FROM users
@@ -76,20 +88,26 @@ func (q *Queries) GetUser(ctx context.Context, userID uuid.UUID) (User, error) {
 }
 
 const getUserIDByEmail = `-- name: GetUserIDByEmail :one
-SELECT user_id, email, password_hash
+SELECT user_id, email, is_moderator, password_hash
 FROM users
 WHERE email = $1
 `
 
 type GetUserIDByEmailRow struct {
-	UserID       uuid.UUID `json:"user_id"`
-	Email        string    `json:"email"`
-	PasswordHash string    `json:"password_hash"`
+	UserID       uuid.UUID    `json:"user_id"`
+	Email        string       `json:"email"`
+	IsModerator  sql.NullBool `json:"is_moderator"`
+	PasswordHash string       `json:"password_hash"`
 }
 
 func (q *Queries) GetUserIDByEmail(ctx context.Context, email string) (GetUserIDByEmailRow, error) {
 	row := q.db.QueryRowContext(ctx, getUserIDByEmail, email)
 	var i GetUserIDByEmailRow
-	err := row.Scan(&i.UserID, &i.Email, &i.PasswordHash)
+	err := row.Scan(
+		&i.UserID,
+		&i.Email,
+		&i.IsModerator,
+		&i.PasswordHash,
+	)
 	return i, err
 }

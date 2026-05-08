@@ -19,8 +19,9 @@ type Credentials struct {
 }
 
 type Claims struct {
-	UserID string `json: User_ID`
-	Email  string `json:"email"`
+	UserID      string `json:"user_id"`
+	Email       string `json:"email"`
+	IsModerator bool   `json:"is_moderator"`
 	jwt.RegisteredClaims
 }
 
@@ -51,8 +52,9 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	expirationTime := time.Now().Add(5 * time.Minute)
 
 	claims := &Claims{
-		UserID: expectedUser.UserID.String(),
-		Email:  creds.Email,
+		UserID:      expectedUser.UserID.String(),
+		Email:       creds.Email,
+		IsModerator: expectedUser.IsModerator.Bool,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
@@ -131,6 +133,24 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		ctx := context.WithValue(r.Context(), userContextKey, claims)
 		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+func ModeratorMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		user := GetUserFromContext(r)
+		if user == nil {
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		if !user.IsModerator {
+			http.Error(w, "forbidden", http.StatusForbidden)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }
 

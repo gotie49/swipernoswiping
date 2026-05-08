@@ -1,11 +1,17 @@
 -- name: GetNearbyLocations :many
-SELECT location_id, name, description, geom
+SELECT
+  location_id,
+  name,
+  description,
+  ST_X(geom) AS lng,
+  ST_Y(geom) AS lat
 FROM locations
 WHERE ST_DWithin(
   geom::geography,
   ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography,
   $3
 )
+AND status = 'active'
 ORDER BY created_at DESC;
 
 -- name: CreateLocation :one
@@ -39,7 +45,10 @@ VALUES (
 RETURNING *;
 
 -- name: GetLocationByID :one
-SELECT *
+SELECT
+  *,
+  ST_X(geom) AS lng,
+  ST_Y(geom) AS lat
 FROM locations
 WHERE location_id = $1;
 
@@ -78,3 +87,15 @@ FROM locations
 WHERE status = 'active'
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2;
+
+-- name: DeleteLocation :exec
+UPDATE locations
+SET
+  status = 'deleted',
+  updated_at = NOW()
+WHERE location_id = $1;
+
+-- name: HideLocation :exec
+UPDATE locations
+SET status = 'hidden'
+WHERE location_id = $1;

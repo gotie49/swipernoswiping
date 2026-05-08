@@ -88,15 +88,48 @@ func (q *Queries) CreateLocation(ctx context.Context, arg CreateLocationParams) 
 	return i, err
 }
 
+const deleteLocation = `-- name: DeleteLocation :exec
+UPDATE locations
+SET
+  status = 'deleted',
+  updated_at = NOW()
+WHERE location_id = $1
+`
+
+func (q *Queries) DeleteLocation(ctx context.Context, locationID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteLocation, locationID)
+	return err
+}
+
 const getLocationByID = `-- name: GetLocationByID :one
-SELECT location_id, name, description, geom, address, location_type, opening_hours, created_at, updated_at, status, creator_user_id, average_rating
+SELECT
+  location_id, name, description, geom, address, location_type, opening_hours, created_at, updated_at, status, creator_user_id, average_rating,
+  ST_X(geom) AS lng,
+  ST_Y(geom) AS lat
 FROM locations
 WHERE location_id = $1
 `
 
-func (q *Queries) GetLocationByID(ctx context.Context, locationID uuid.UUID) (Location, error) {
+type GetLocationByIDRow struct {
+	LocationID    uuid.UUID             `json:"location_id"`
+	Name          string                `json:"name"`
+	Description   sql.NullString        `json:"description"`
+	Geom          interface{}           `json:"geom"`
+	Address       sql.NullString        `json:"address"`
+	LocationType  sql.NullString        `json:"location_type"`
+	OpeningHours  pqtype.NullRawMessage `json:"opening_hours"`
+	CreatedAt     sql.NullTime          `json:"created_at"`
+	UpdatedAt     sql.NullTime          `json:"updated_at"`
+	Status        sql.NullString        `json:"status"`
+	CreatorUserID uuid.UUID             `json:"creator_user_id"`
+	AverageRating sql.NullFloat64       `json:"average_rating"`
+	Lng           interface{}           `json:"lng"`
+	Lat           interface{}           `json:"lat"`
+}
+
+func (q *Queries) GetLocationByID(ctx context.Context, locationID uuid.UUID) (GetLocationByIDRow, error) {
 	row := q.db.QueryRowContext(ctx, getLocationByID, locationID)
-	var i Location
+	var i GetLocationByIDRow
 	err := row.Scan(
 		&i.LocationID,
 		&i.Name,
@@ -110,6 +143,8 @@ func (q *Queries) GetLocationByID(ctx context.Context, locationID uuid.UUID) (Lo
 		&i.Status,
 		&i.CreatorUserID,
 		&i.AverageRating,
+		&i.Lng,
+		&i.Lat,
 	)
 	return i, err
 }
@@ -173,13 +208,19 @@ func (q *Queries) GetLocationsInBounds(ctx context.Context, arg GetLocationsInBo
 }
 
 const getNearbyLocations = `-- name: GetNearbyLocations :many
-SELECT location_id, name, description, geom
+SELECT
+  location_id,
+  name,
+  description,
+  ST_X(geom) AS lng,
+  ST_Y(geom) AS lat
 FROM locations
 WHERE ST_DWithin(
   geom::geography,
   ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography,
   $3
 )
+AND status = 'active'
 ORDER BY created_at DESC
 `
 
@@ -193,7 +234,8 @@ type GetNearbyLocationsRow struct {
 	LocationID  uuid.UUID      `json:"location_id"`
 	Name        string         `json:"name"`
 	Description sql.NullString `json:"description"`
-	Geom        interface{}    `json:"geom"`
+	Lng         interface{}    `json:"lng"`
+	Lat         interface{}    `json:"lat"`
 }
 
 func (q *Queries) GetNearbyLocations(ctx context.Context, arg GetNearbyLocationsParams) ([]GetNearbyLocationsRow, error) {
@@ -209,7 +251,8 @@ func (q *Queries) GetNearbyLocations(ctx context.Context, arg GetNearbyLocations
 			&i.LocationID,
 			&i.Name,
 			&i.Description,
-			&i.Geom,
+			&i.Lng,
+			&i.Lat,
 		); err != nil {
 			return nil, err
 		}
@@ -222,6 +265,17 @@ func (q *Queries) GetNearbyLocations(ctx context.Context, arg GetNearbyLocations
 		return nil, err
 	}
 	return items, nil
+}
+
+const hideLocation = `-- name: HideLocation :exec
+UPDATE locations
+SET status = 'hidden'
+WHERE location_id = $1
+`
+
+func (q *Queries) HideLocation(ctx context.Context, locationID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, hideLocation, locationID)
+	return err
 }
 
 const listLocations = `-- name: ListLocations :many

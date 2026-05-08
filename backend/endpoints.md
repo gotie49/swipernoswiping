@@ -1,56 +1,74 @@
-# 📡 API Übersicht
-
-Diese Dokumentation beschreibt die verfügbaren Endpunkte der Anwendung.
+# 📡 API Documentation
 
 ---
 
-# 🧭 Auth / User
+# 🔐 Authentication Endpoints
 
-## 🟢 Benutzer erstellen
+## Register
 
-**POST** `/user/register`
+### POST /user/register
 
-Erstellt einen neuen User.
+Create a new user account.
 
-### Request Body
+### Request
+
+```http
+POST /user/register
+Content-Type: application/json
+```
 
 ```json
 {
-  "username": "string",
-  "email": "string",
-  "password": "string"
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123"
 }
 ```
 
-### Validierung
+### Responses
 
-* username erforderlich
-* email erforderlich
-* password erforderlich
+**Success (201)**
 
-### Response
+```json
+{
+  "user_id": "...",
+  "username": "testuser",
+  "email": "test@example.com"
+}
+```
 
-* `201 Created`
-* User-Objekt aus der Datenbank
+**Errors**
+
+| Status | Message | Description |
+|------|--------|-------------|
+| 400 | "invalid json body" | Malformed JSON |
+| 500 | "failed to create user" | DB error |
 
 ---
 
-## 🔐 Login
+## Login
 
-**POST** `/user/login`
+### POST /user/login
 
-Authentifiziert einen User und gibt ein JWT zurück.
+Authenticate user and return JWT.
 
-### Request Body
+### Request
+
+```http
+POST /user/login
+Content-Type: application/json
+```
 
 ```json
 {
-  "email": "string",
-  "password": "string"
+  "email": "test@example.com",
+  "password": "password123"
 }
 ```
 
-### Response
+### Responses
+
+**Success (200)**
 
 ```json
 {
@@ -58,31 +76,57 @@ Authentifiziert einen User und gibt ein JWT zurück.
 }
 ```
 
-### Zusätzlich
+**Errors**
 
-* Setzt HTTP-only Cookie: `token`
-* JWT enthält:
-
-  * user_id
-  * email
-  * expiration (5 Minuten)
+| Status | Message | Description |
+|------|--------|-------------|
+| 400 | "invalid json body" | Malformed request |
+| 401 | "invalid credentials" | Wrong login |
 
 ---
 
-# 📍 Locations
+## Current User
 
-## 📥 Alle Locations abrufen
+### GET /user/me (AUTH REQUIRED)
 
-**GET** `/locations`
+Returns authenticated user.
 
-Gibt eine Liste aller Locations zurück.
+### Response (200)
 
-### Verhalten
+```json
+{
+  "user_id": "...",
+  "email": "test@example.com"
+}
+```
 
-* Limit: 50
-* Offset: 0 (aktuell fix im Code)
+---
+
+## Delete User
+
+### DELETE /user (AUTH REQUIRED)
+
+Delete current user account.
 
 ### Response
+
+**Success (200)**
+
+```json
+"deleted"
+```
+
+---
+
+# 📍 Location Endpoints
+
+## Get All Locations
+
+### GET /locations
+
+Retrieve list of locations.
+
+### Response (200)
 
 ```json
 [
@@ -95,97 +139,225 @@ Gibt eine Liste aller Locations zurück.
 
 ---
 
-## 📍 Location nach ID abrufen
+## Get Location by ID
 
-**GET** `/locations/{id}`
+### GET /locations/{id}
 
-⚠️ Noch nicht implementiert
+### Response (200)
+
+```json
+{
+  "location_id": "...",
+  "name": "..."
+}
+```
 
 ---
 
-## ➕ Location erstellen (AUTH REQUIRED)
+## Search Locations
 
-**POST** `/locations`
+### GET /locations/search?q=term
 
-Erstellt eine neue Location.
+### Response (200)
 
-### Request Body
+```json
+[]
+```
+
+---
+
+## Nearby Locations
+
+### GET /locations/nearby
+
+### Query Params
+
+- lat
+- lng
+- distance
+
+### Response (200)
+
+```json
+[]
+```
+
+---
+
+## Create Location (AUTH REQUIRED)
+
+### POST /locations
+
+### Request
 
 ```json
 {
   "name": "string",
   "description": "string",
-  "lat": 48.123,
-  "lng": 11.123,
+  "lat": 0,
+  "lng": 0,
   "address": "string",
   "location_type": "string",
   "opening_hours": {},
-  "status": "string",
-  "creator_user_id": "string"
+  "status": "string"
 }
 ```
 
-### Validierung
+### Response (201)
 
-* name erforderlich
-* lat: -90 bis 90
-* lng: -180 bis 180
-* User muss authentifiziert sein
-
-### Automatisch vom Server gesetzt
-
-* location_id (UUID)
-* creator_user_id aus JWT Context
-* status = "active" falls leer
-
-### Response
-
-* `201 Created`
-* Location Objekt
-
----
-
-# 🔐 Auth System
-
-## JWT Eigenschaften
-
-* Algorithmus: HS256
-* Secret: `JWT_SECRET`
-* Ablaufzeit: 5 Minuten
-* Speicherung:
-
-  * HTTP-only Cookie `token`
-  * zusätzlich JSON Response
-
----
-
-# ⚠️ Hinweise
-
-## Strukturproblem
-
-* Login ist unnötig über `UserAuth` gewrappt
-* `/user/login` sollte direkt `Login` nutzen
-
-## Fehlende Implementierung
-
-* `GET /locations/{id}` ist leer
-
-## Pagination
-
-* aktuell fix (Limit 50, Offset 0)
-* keine echte Pagination vorhanden
-
----
-
-# 📌 Übersicht (Kurzform)
-
+```json
+{
+  "location_id": "..."
+}
 ```
-AUTH
-POST   /user/register
-POST   /user/login
 
-LOCATIONS
-GET    /locations
-GET    /locations/{id} (TODO)
-POST   /locations (AUTH)
+---
+
+## Update Location (AUTH REQUIRED)
+
+### PUT /locations/{id}
+
+### Request
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "address": "string",
+  "location_type": "string",
+  "status": "string"
+}
 ```
+
+---
+
+## Delete Location (AUTH REQUIRED)
+
+### DELETE /locations/{id}
+
+---
+
+# 💬 Comment Endpoints
+
+## Get Comments
+
+### GET /locations/{id}/comments
+
+---
+
+## Create Comment (AUTH REQUIRED)
+
+### POST /locations/{id}/comments
+
+```json
+{
+  "text": "hello"
+}
+```
+
+---
+
+## Delete Comment (AUTH REQUIRED)
+
+### DELETE /comments/{id}
+
+---
+
+# ⭐ Rating Endpoints
+
+## Get Ratings
+
+### GET /locations/{id}/ratings
+
+---
+
+## Create Rating (AUTH REQUIRED)
+
+### POST /locations/{id}/ratings
+
+```json
+{
+  "score": 5
+}
+```
+
+---
+
+# 🚩 Report Endpoints
+
+## Report Location (AUTH REQUIRED)
+
+### POST /locations/{id}/report
+
+```json
+{
+  "reason": "spam"
+}
+```
+
+---
+
+## Report Comment (AUTH REQUIRED)
+
+### POST /comments/{id}/report
+
+```json
+{
+  "reason": "abuse"
+}
+```
+
+---
+
+# 🏷️ Tags
+
+## Get Tags
+
+### GET /tags
+
+---
+
+# 🛡️ Moderation (MOD ONLY)
+
+## Get Queue
+
+### GET /moderation/queue
+
+---
+
+## Review Item
+
+### POST /moderation/{id}/review
+
+```json
+{
+  "status": "approved"
+}
+```
+
+---
+
+## Get Reports
+
+### GET /moderation/reports
+
+---
+
+## Hide Comment
+
+### POST /moderation/comments/{id}/hide
+
+---
+
+## Hide Location
+
+### POST /moderation/locations/{id}/hide
+
+---
+
+# 🔐 Security Notes
+
+- JWT HS256
+- 5 minute expiration
+- HTTP-only cookie support
+- bcrypt password hashing

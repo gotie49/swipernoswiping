@@ -12,16 +12,32 @@ import (
 )
 
 type Querier interface {
+	CreateComment(ctx context.Context, arg CreateCommentParams) (Comment, error)
 	CreateLocation(ctx context.Context, arg CreateLocationParams) (Location, error)
+	CreateRating(ctx context.Context, arg CreateRatingParams) (Rating, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	GetLocationByID(ctx context.Context, locationID uuid.UUID) (Location, error)
+	DeleteComment(ctx context.Context, commentID uuid.UUID) error
+	DeleteLocation(ctx context.Context, locationID uuid.UUID) error
+	DeleteUser(ctx context.Context, userID uuid.UUID) error
+	GetCommentsByLocation(ctx context.Context, locationID uuid.UUID) ([]Comment, error)
+	GetLocationByID(ctx context.Context, locationID uuid.UUID) (GetLocationByIDRow, error)
 	GetLocationsInBounds(ctx context.Context, arg GetLocationsInBoundsParams) ([]GetLocationsInBoundsRow, error)
+	GetModerationQueue(ctx context.Context) ([]ModerationQueue, error)
 	GetNearbyLocations(ctx context.Context, arg GetNearbyLocationsParams) ([]GetNearbyLocationsRow, error)
+	GetRatingsByLocation(ctx context.Context, locationID uuid.UUID) ([]Rating, error)
+	GetReports(ctx context.Context) ([]Report, error)
+	GetTags(ctx context.Context) ([]Tag, error)
 	GetUser(ctx context.Context, userID uuid.UUID) (User, error)
 	GetUserIDByEmail(ctx context.Context, email string) (GetUserIDByEmailRow, error)
+	HideComment(ctx context.Context, commentID uuid.UUID) error
+	HideLocation(ctx context.Context, locationID uuid.UUID) error
 	ListLocations(ctx context.Context, arg ListLocationsParams) ([]Location, error)
+	ReportComment(ctx context.Context, arg ReportCommentParams) (Report, error)
+	ReportLocation(ctx context.Context, arg ReportLocationParams) (Report, error)
+	ReviewModeration(ctx context.Context, arg ReviewModerationParams) error
 	SearchLocations(ctx context.Context, dollar_1 sql.NullString) ([]Location, error)
 	UpdateLocation(ctx context.Context, arg UpdateLocationParams) (Location, error)
+	UpdateLocationAverageRating(ctx context.Context, locationID uuid.UUID) error
 }
 
 var _ Querier = (*Queries)(nil)
