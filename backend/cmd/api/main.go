@@ -53,6 +53,9 @@ func SetupAPI(h *Handler) http.Handler {
 	r.Get("/locations", h.GetAllLocations)
 	r.Get("/locations/{id}", h.GetLocationByID)
 	r.Get("/locations/nearby", h.GetNearby)
+	r.Get("/locations/search", h.SearchLocations)
+
+	r.Get("/locations/{id}/comments", h.GetCommentsByLocation)
 
 	r.Post("/user/register", h.UserCreate)
 	r.Post("/user/login", h.UserAuth)
@@ -62,8 +65,26 @@ func SetupAPI(h *Handler) http.Handler {
 		protected.Use(AuthMiddleware)
 
 		protected.Post("/locations", h.CreateLocation)
+		protected.Put("/locations/{id}", h.UpdateLocation)
+
+		protected.Post("/locations/{id}/comments", h.CreateComment)
+
+		protected.Post("/locations/{id}/report", h.ReportLocation)
+		protected.Post("/comments/{id}/report", h.ReportComment)
+
+		protected.Delete("/user", h.UserDelete)
 		protected.Get("/user/me", h.GetCurrentUser)
-		//protected.Delete("/user", h.UserDelete)
+	})
+
+	// MODERATOR
+	r.Group(func(mod chi.Router) {
+		mod.Use(AuthMiddleware)
+		mod.Use(ModeratorMiddleware)
+
+		mod.Get("/moderation/queue", h.GetModerationQueue)
+		mod.Post("/moderation/{id}/review", h.ReviewModeration)
+
+		mod.Get("/moderation/reports", h.GetReports)
 	})
 
 	return r
