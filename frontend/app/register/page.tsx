@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
 import Button from '@/components/ui/Button/Button'
 import Input from '@/components/ui/Input/Input'
-import styles from './RegisterPage.module.css'
 import { MdArrowBack } from 'react-icons/md'
+import styles from './RegisterPage.module.css'
 
 export default function RegisterPage() {
   const { login } = useUser()
@@ -31,38 +31,50 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      /*
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch('/api/user/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ username: name, email, password }),
       })
 
-      const data = await res.json()
-
       if (!res.ok) {
-        setError(data.message ?? 'Registrierung fehlgeschlagen')
+        const msg = await res.text()
+        setError(msg || 'Registrierung fehlgeschlagen')
         return
       }
 
-      login(data.token, data.user)
+      const loginRes = await fetch('/api/user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+
+      if (!loginRes.ok) {
+        router.push('/login')
+        return
+      }
+
+      const loginData = await loginRes.json()
+      const token: string = loginData.token
+
+      const meRes = await fetch('/api/user/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      if (!meRes.ok) {
+        router.push('/login')
+        return
+      }
+
+      const user = await meRes.json()
+
+      login(token, {
+        user_id: user.user_id,
+        email: user.email,
+        is_moderator: user.is_moderator,
+      })
+
       router.push('/map')
-      */
-            // --- DUMMY REGISTER ---
-            await new Promise(resolve => setTimeout(resolve, 500))
-
-            if (password !== passwordConfirm) {
-                setError('Passwörter stimmen nicht überein')
-                return
-            }
-
-            login('dummy-token-123', {
-                user_id: '1',
-                name,
-                email,
-            })
-            router.push('/map')
-            // --- ENDE DUMMY ---
     } catch {
       setError('Verbindung zum Server fehlgeschlagen')
     } finally {
@@ -74,8 +86,8 @@ export default function RegisterPage() {
     <div className={styles.container}>
       <div className={styles.card}>
         <button
-        onClick={() => router.push('/map')}
-        style={{
+          onClick={() => router.push('/map')}
+          style={{
             background: 'none',
             border: 'none',
             cursor: 'pointer',
@@ -84,10 +96,11 @@ export default function RegisterPage() {
             alignItems: 'center',
             marginBottom: 16,
             padding: 0,
-        }}
+          }}
         >
-        <MdArrowBack size={22} />
+          <MdArrowBack size={22} />
         </button>
+
         <h1 className={styles.title}>Registrieren</h1>
         <p className={styles.subtitle}>
           Erstelle ein Konto um Orte zu bewerten und zu kommentieren.
@@ -135,9 +148,7 @@ export default function RegisterPage() {
 
         <p className={styles.footer}>
           Bereits ein Konto?{' '}
-          <a href="/login" className={styles.footerLink}>
-            Anmelden
-          </a>
+          <a href="/login" className={styles.footerLink}>Anmelden</a>
         </p>
       </div>
     </div>

@@ -49,7 +49,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(24 * time.Hour)
 
 	claims := &Claims{
 		UserID:      expectedUser.UserID.String(),

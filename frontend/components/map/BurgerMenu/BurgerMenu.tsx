@@ -79,7 +79,7 @@ export default function BurgerMenu({ activeTypes, onTypeToggle, onResetTypes, on
         <div className={styles.spacer} />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {user?.role === 'moderator' && (
+          {user?.is_moderator && (
             <button
               onClick={() => { router.push('/moderation'); onClose() }}
               className={styles.authButton}

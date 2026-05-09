@@ -62,6 +62,7 @@ func SetupAPI(h *Handler) http.Handler {
 		protected.Use(AuthMiddleware)
 
 		protected.Post("/locations", h.CreateLocation)
+		protected.Get("/user/me", h.GetCurrentUser)
 		//protected.Delete("/user", h.UserDelete)
 	})
 

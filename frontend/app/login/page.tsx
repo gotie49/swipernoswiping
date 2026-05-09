@@ -21,60 +21,54 @@ export default function LoginPage() {
     e.preventDefault()
     setError(null)
     setIsLoading(true)
-    /*try {
 
-      const res = await fetch('/api/auth/login', {
-
+    try {
+      const res = await fetch('/api/user/login', {
         method: 'POST',
-
         headers: { 'Content-Type': 'application/json' },
-
         body: JSON.stringify({ email, password }),
-
       })
 
-      const data = await res.json()
-
       if (!res.ok) {
-
-        setError(data.message ?? 'Login fehlgeschlagen')
-
+        const msg = await res.text()
+        setError(msg || 'Login fehlgeschlagen')
         return
-
       }
 
-      login(data.token, data.user)
+      const data = await res.json()
+      const token: string = data.token
+
+      const meRes = await fetch('/api/user/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      if (!meRes.ok) {
+        setError('Benutzerdaten konnten nicht geladen werden')
+        return
+      }
+
+      const user = await meRes.json()
+
+      login(token, {
+        user_id: user.user_id,
+        email: user.email,
+        is_moderator: user.is_moderator,
+      })
 
       router.push('/map')
-
     } catch {
-
       setError('Verbindung zum Server fehlgeschlagen')
-
     } finally {
-
       setIsLoading(false)
-
-    }*/
-
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    if (email === 'test@test.de' && password === '1234') {
-      login('dummy-token-123', { user_id: '1', name: 'Test User', email, role: 'moderator' })
-      router.push('/map')
-    } else {
-      setError('E-Mail oder Passwort falsch')
     }
-
-    setIsLoading(false)
   }
 
   return (
     <div className={styles.page}>
       <div className={styles.card}>
         <button
-        onClick={() => router.push('/map')}
-        style={{
+          onClick={() => router.push('/map')}
+          style={{
             background: 'none',
             border: 'none',
             cursor: 'pointer',
@@ -83,10 +77,11 @@ export default function LoginPage() {
             alignItems: 'center',
             marginBottom: 16,
             padding: 0,
-        }}
+          }}
         >
-        <MdArrowBack size={22} />
+          <MdArrowBack size={22} />
         </button>
+
         <h1 className={styles.title}>Anmelden</h1>
         <p className={styles.subtitle}>
           Melde dich an um Orte zu bewerten und zu kommentieren.

@@ -1,6 +1,6 @@
 export interface User {
   user_id: string
-  name: string
+  name?: string        // optional — nicht im JWT
   email: string
-  role: 'user' | 'moderator'
+  is_moderator: boolean
 }
