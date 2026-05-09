@@ -53,7 +53,11 @@ export default function MapView() {
     zoom: 14,
   })
   const [locations, setLocations] = useState<Location[]>(DUMMY_LOCATIONS)
-  const [userLocation, setUserLocation] = useState<{ longitude: number; latitude: number } | null>(null)
+  //const [userLocation, setUserLocation] = useState<{ longitude: number; latitude: number } | null>(null)
+  const [userLocation, setUserLocation] = useState<{ longitude: number; latitude: number } | null>({
+    longitude: 10.0010,
+    latitude: 53.5090,
+  })
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
   const [activeTypes, setActiveTypes] = useState<string[]>([])
 
@@ -61,7 +65,7 @@ export default function MapView() {
     async function loadNearby(lat: number, lng: number) {
       try {
         const res = await fetch(
-          `/api/locations/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&distance=${NEARBY_DISTANCE_METERS}`
+          `/api/locations/nearby?lat=${lat}&lng=${lng}&distance=${NEARBY_DISTANCE_METERS}`
         )
         if (!res.ok) {
           console.warn('Unable to load nearby locations:', res.statusText)
@@ -98,7 +102,7 @@ export default function MapView() {
 
     loadNearby(HAMBURG_WILHELMSBURG.latitude, HAMBURG_WILHELMSBURG.longitude)
 
-    if (!navigator?.geolocation) return
+    /*if (!navigator?.geolocation) return
 
     navigator.geolocation.getCurrentPosition(
       position => {
@@ -118,7 +122,7 @@ export default function MapView() {
         console.warn('Unable to read user location:', error.message)
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    )
+    )*/
   }, [])
 
   function handleTypeToggle(type: string) {

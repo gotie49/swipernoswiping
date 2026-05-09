@@ -233,6 +233,10 @@ func (h *Handler) GetNearby(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if locations == nil {
+		locations = []db.GetNearbyLocationsRow{}
+	}
+
 	json.NewEncoder(w).Encode(locations)
 }
 

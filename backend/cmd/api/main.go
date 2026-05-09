@@ -52,7 +52,7 @@ func SetupAPI(h *Handler) http.Handler {
 	// PUBLIC ROUTES
 	r.Get("/locations", h.GetAllLocations)
 	r.Get("/locations/{id}", h.GetLocationByID)
-	//r.Get("/locations/nearby", h.GetNearby)
+	r.Get("/locations/nearby", h.GetNearby)
 
 	r.Post("/user/register", h.UserCreate)
 	r.Post("/user/login", h.UserAuth)
