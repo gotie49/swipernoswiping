@@ -3,16 +3,12 @@
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
 import { MdClose, MdLogin, MdLogout, MdAddLocation, MdAdminPanelSettings } from 'react-icons/md'
+import { LOCATION_TYPES as BASE_TYPES } from '@/types/locationTypes'
 import styles from './BurgerMenu.module.css'
 
 const LOCATION_TYPES = [
-  { key: 'alle',       label: 'Alle',       color: '#111827' },
-  { key: 'cafe',       label: 'Café',       color: '#F59E0B' },
-  { key: 'restaurant', label: 'Restaurant', color: '#EF4444' },
-  { key: 'park',       label: 'Natur',      color: '#22C55E' },
-  { key: 'sports',     label: 'Sport',      color: '#3B82F6' },
-  { key: 'shopping',   label: 'Shopping',   color: '#A855F7' },
-  { key: 'culture',    label: 'Kultur',     color: '#EC4899' },
+  { key: 'alle', label: 'Alle', color: '#111827' },
+  ...BASE_TYPES,
 ]
 
 interface BurgerMenuProps {
@@ -40,7 +36,6 @@ export default function BurgerMenu({ activeTypes, onTypeToggle, onResetTypes, on
     <>
       <div className={styles.backdrop} onClick={onClose} />
       <div className={styles.panel} onClick={e => e.stopPropagation()}>
-
         {/* Header */}
         <div className={styles.header}>
           <p className={styles.title}>Menü</p>
@@ -64,7 +59,6 @@ export default function BurgerMenu({ activeTypes, onTypeToggle, onResetTypes, on
             const isActive = type.key === 'alle'
               ? activeTypes.length === 0
               : activeTypes.includes(type.key)
-
             return (
               <button
                 key={type.key}
@@ -83,6 +77,7 @@ export default function BurgerMenu({ activeTypes, onTypeToggle, onResetTypes, on
         </div>
 
         <div className={styles.spacer} />
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {user?.role === 'moderator' && (
             <button

@@ -1,13 +1,6 @@
 'use client'
 
-const LOCATION_TYPES = [
-  { key: 'cafe',       label: 'Café',       color: '#F59E0B' },
-  { key: 'restaurant', label: 'Restaurant', color: '#EF4444' },
-  { key: 'park',       label: 'Natur',      color: '#22C55E' },
-  { key: 'sports',     label: 'Sport',      color: '#3B82F6' },
-  { key: 'shopping',   label: 'Shopping',   color: '#A855F7' },
-  { key: 'culture',    label: 'Kultur',     color: '#EC4899' },
-]
+import { LOCATION_TYPES } from '@/types/locationTypes'
 
 interface FilterBarProps {
   activeTypes: string[]
@@ -21,7 +14,7 @@ export default function FilterBar({ activeTypes, onTypeToggle, onResetTypes }: F
   return (
     <div style={{
       position: 'absolute',
-      top: 72,      // direkt unter der SearchBar (16px top + 44px height + 12px gap)
+      top: 72,
       left: 16,
       right: 16,
       zIndex: 20,
@@ -30,7 +23,6 @@ export default function FilterBar({ activeTypes, onTypeToggle, onResetTypes }: F
       overflowX: 'auto',
       scrollbarWidth: 'none',
     }}>
-      {/* Reset-Tag */}
       <button
         onClick={onResetTypes}
         style={{
@@ -49,7 +41,6 @@ export default function FilterBar({ activeTypes, onTypeToggle, onResetTypes }: F
         ✕ Alle
       </button>
 
-      {/* Aktive Filter */}
       {activeTypes.map(key => {
         const type = LOCATION_TYPES.find(t => t.key === key)
         if (!type) return null

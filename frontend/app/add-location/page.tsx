@@ -1,23 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { MdArrowBack } from 'react-icons/md'
 import Button from '@/components/ui/Button/Button'
 import Input from '@/components/ui/Input/Input'
+import { useUser } from '@/context/UserContext'
+import { LOCATION_TYPES } from '@/types/locationTypes'
+import { geocodeAddress, GeocodingResult } from '@/lib/geocoding'
 import styles from './AddLocationPage.module.css'
-
-const LOCATION_TYPES = [
-  { key: 'cafe',       label: 'Café' },
-  { key: 'restaurant', label: 'Restaurant' },
-  { key: 'park',       label: 'Natur' },
-  { key: 'sports',     label: 'Sport' },
-  { key: 'shopping',   label: 'Shopping' },
-  { key: 'culture',    label: 'Kultur' },
-]
 
 export default function AddLocationPage() {
   const router = useRouter()
+  const { token } = useUser()
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -28,20 +23,75 @@ export default function AddLocationPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
+  const [geocoding, setGeocoding] = useState(false)
+  const [geocodingResult, setGeocodingResult] = useState<GeocodingResult | null>(null)
+  const [geocodingError, setGeocodingError] = useState(false)
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    debounceRef.current = setTimeout(async () => {
+      if (address.trim().length < 5) {
+        setGeocodingResult(null)
+        setGeocodingError(false)
+        setGeocoding(false)
+        return
+      }
+
+      setGeocoding(true)
+      setGeocodingError(false)
+
+      const result = await geocodeAddress(address)
+      setGeocoding(false)
+
+      if (result) {
+        setGeocodingResult(result)
+        setGeocodingError(false)
+      } else {
+        setGeocodingResult(null)
+        setGeocodingError(true)
+      }
+    }, 800)
+  }, [address])
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+
+    if (!geocodingResult) {
+      setError('Bitte gib eine gültige Adresse ein.')
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      // Später: echter API-Call
-      // const res = await fetch('/api/locations', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      //   body: JSON.stringify({ name, description, address, location_type: locationType, opening_hours: openingHours }),
-      // })
+      const res = await fetch('/api/locations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          name,
+          description,
+          address,
+          location_type: locationType,
+          lat: geocodingResult.lat,
+          lng: geocodingResult.lng,
+          opening_hours: openingHours ? { text: openingHours } : null,
+          status: 'active',
+        }),
+      })
 
-      await new Promise(resolve => setTimeout(resolve, 800)) // simuliert Netzwerk
+      if (!res.ok) {
+        const msg = await res.text()
+        setError(msg || 'Einreichen fehlgeschlagen')
+        return
+      }
+
       setSuccess(true)
     } catch {
       setError('Verbindung zum Server fehlgeschlagen')
@@ -69,7 +119,6 @@ export default function AddLocationPage() {
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div className={styles.header}>
         <button className={styles.backButton} onClick={() => router.back()}>
           <MdArrowBack size={22} />
@@ -85,15 +134,38 @@ export default function AddLocationPage() {
           placeholder="Name des Ortes"
           required
         />
-        <Input
-          label="Adresse"
-          value={address}
-          onChange={e => setAddress(e.target.value)}
-          placeholder="Straße, Hausnummer, Stadt"
-          required
-        />
 
-        {/* Typ-Auswahl */}
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>Adresse</label>
+          <input
+            value={address}
+            onChange={e => setAddress(e.target.value)}
+            placeholder="Straße, Hausnummer, Stadt"
+            required
+            className={styles.addressInput}
+            style={{
+              borderColor: geocodingError
+                ? '#EF4444'
+                : geocodingResult
+                  ? '#22C55E'
+                  : undefined,
+            }}
+          />
+          {geocoding && (
+            <p className={styles.geocodingHint}>Adresse wird gesucht...</p>
+          )}
+          {geocodingResult && !geocoding && (
+            <p className={styles.geocodingSuccess}>
+              {geocodingResult.displayName}
+            </p>
+          )}
+          {geocodingError && !geocoding && (
+            <p className={styles.geocodingError}>
+               Adresse nicht gefunden. Bitte genauer eingeben.
+            </p>
+          )}
+        </div>
+
         <div className={styles.fieldGroup}>
           <label className={styles.label}>Kategorie</label>
           <div className={styles.typeGrid}>
@@ -104,8 +176,9 @@ export default function AddLocationPage() {
                 onClick={() => setLocationType(type.key)}
                 className={styles.typeButton}
                 style={{
-                  background: locationType === type.key ? '#111827' : 'white',
-                  color: locationType === type.key ? 'white' : '#111827',
+                  background: locationType === type.key ? type.color : 'white',
+                  color: locationType === type.key ? 'white' : type.color,
+                  borderColor: type.color,
                 }}
               >
                 {type.label}
@@ -114,7 +187,6 @@ export default function AddLocationPage() {
           </div>
         </div>
 
-        {/* Beschreibung */}
         <div className={styles.fieldGroup}>
           <label className={styles.label}>Beschreibung</label>
           <textarea
@@ -135,7 +207,10 @@ export default function AddLocationPage() {
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <Button type="submit" disabled={isLoading}>
+        <Button
+          type="submit"
+          disabled={isLoading || !geocodingResult || geocoding}
+        >
           {isLoading ? 'Wird eingereicht...' : 'Ort einreichen'}
         </Button>
       </form>
