@@ -20,6 +20,7 @@ type Credentials struct {
 
 type Claims struct {
 	UserID      string `json:"user_id"`
+	Username    string `json:"username"`
 	Email       string `json:"email"`
 	IsModerator bool   `json:"is_moderator"`
 	jwt.RegisteredClaims
@@ -53,6 +54,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 
 	claims := &Claims{
 		UserID:      expectedUser.UserID.String(),
+		Username:    "", //expectedUser.Username, auskommentiert, da sqlc nicht funktioniert bei mir amk
 		Email:       creds.Email,
 		IsModerator: expectedUser.IsModerator.Bool,
 		RegisteredClaims: jwt.RegisteredClaims{

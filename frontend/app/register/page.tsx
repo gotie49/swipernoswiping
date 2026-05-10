@@ -70,6 +70,7 @@ export default function RegisterPage() {
 
       login(token, {
         user_id: user.user_id,
+        name: user.username, 
         email: user.email,
         is_moderator: user.is_moderator,
       })
