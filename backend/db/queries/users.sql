@@ -19,7 +19,8 @@ VALUES (
 RETURNING *;
 
 -- name: GetUserIDByEmail :one
-SELECT user_id, username, email, is_moderator, password_hash
+-- TODO: hier username hinzufügen
+SELECT user_id, email, is_moderator, password_hash
 FROM users
 WHERE email = $1;
 
