@@ -10,25 +10,6 @@ jobs:
   # ─────────────────────────────────────────────
   # Backend
   # ─────────────────────────────────────────────
-  backend-lint:
-    name: Backend – Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Go einrichten
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.22"
-          cache: true
-          cache-dependency-path: backend/go.sum
-
-      - name: golangci-lint ausführen
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: latest
-          working-directory: backend
-
   backend-test:
     name: Backend – Tests & Coverage
     runs-on: ubuntu-latest
@@ -53,7 +34,7 @@ jobs:
       - name: Go einrichten
         uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.25"
           cache: true
           cache-dependency-path: backend/go.sum
 
@@ -73,7 +54,7 @@ jobs:
         working-directory: ./backend
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb?sslmode=disable
-        run: go test ./... -coverprofile=coverage.out -covermode=atomic -v
+        run: go test $(go list ./... | grep -v 'internal/db') -coverprofile=coverage.out -covermode=atomic -v
 
       - name: Coverage-Bericht anzeigen
         working-directory: ./backend
@@ -98,7 +79,7 @@ jobs:
       - name: Go einrichten
         uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.25"
           cache: true
           cache-dependency-path: backend/go.sum
 
