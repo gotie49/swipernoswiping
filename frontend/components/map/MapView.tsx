@@ -18,20 +18,26 @@ const HAMBURG_WILHELMSBURG = {
 
 const NEARBY_DISTANCE_METERS = 5000
 
+function nullString(val: unknown): string | null {
+  if (val && typeof val === 'object' && 'String' in val && 'Valid' in val) {
+    const v = val as { String: string; Valid: boolean }
+    return v.Valid ? v.String : null
+  }
+  return typeof val === 'string' ? val : null
+}
+
 type NearbyLocationResponse = {
   location_id: string
   name: string
-  description: string | null
-  address: string | null
-  location_type: string | null
+  description: unknown
+  address: unknown
+  location_type: unknown
   opening_hours: unknown
-  status: string | null
+  status: unknown
   creator_user_id: string | null
-  average_rating: number | null
-  geom: {
-    type: 'Point'
-    coordinates: [number, number]
-  }
+  average_rating: unknown
+  lng: number
+  lat: number
 }
 
 function FlyToHandler({ location }: { location: Location | null }) {
@@ -53,7 +59,6 @@ export default function MapView() {
     zoom: 14,
   })
   const [locations, setLocations] = useState<Location[]>(DUMMY_LOCATIONS)
-  //const [userLocation, setUserLocation] = useState<{ longitude: number; latitude: number } | null>(null)
   const [userLocation, setUserLocation] = useState<{ longitude: number; latitude: number } | null>({
     longitude: 10.0010,
     latitude: 53.5090,
@@ -73,7 +78,12 @@ export default function MapView() {
           return
         }
 
-        const data: NearbyLocationResponse[] = await res.json()
+        const data: NearbyLocationResponse[] | null = await res.json()
+        if (!data) {
+          setLocations(DUMMY_LOCATIONS)
+          return
+        }
+
         setLocations(data.map(item => {
           const openingHours =
             typeof item.opening_hours === 'string'
@@ -85,12 +95,15 @@ export default function MapView() {
           return {
             location_id: item.location_id,
             name: item.name,
-            description: item.description,
-            geom: item.geom,
-            address: item.address,
-            location_type: item.location_type,
+            description: nullString(item.description),
+            geom: {
+              type: 'Point' as const,
+              coordinates: [item.lng, item.lat] as [number, number],
+            },
+            address: nullString(item.address),
+            location_type: nullString(item.location_type),
             opening_hours: openingHours,
-            status: item.status,
+            status: nullString(item.status),
             creator_user_id: item.creator_user_id,
           }
         }))

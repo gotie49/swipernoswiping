@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useUser } from '@/context/UserContext'
 import styles from './ReportForm.module.css'
 
 const REASONS: Record<'comment' | 'location', string[]> = {
@@ -27,18 +28,43 @@ interface ReportFormProps {
 }
 
 export default function ReportForm({ type, targetId, onClose }: ReportFormProps) {
+  const { token } = useUser()
   const [selectedReason, setSelectedReason] = useState<string | null>(null)
   const [description, setDescription] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit() {
     if (!selectedReason) return
     setIsSubmitting(true)
-    // TODO: await fetch(`/api/reports`, { method: 'POST', body: JSON.stringify({ type, targetId, reason: selectedReason, description }) })
-    await new Promise(r => setTimeout(r, 500))
-    setSubmitted(true)
-    setIsSubmitting(false)
+    setError(null)
+
+    try {
+      const url = type === 'location'
+        ? `/api/locations/${targetId}/report`
+        : `/api/comments/${targetId}/report`
+
+      const body = type === 'location'
+        ? { location_id: targetId, reason: selectedReason, description }
+        : { comment_id: targetId, reason: selectedReason, description }
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(body),
+      })
+
+      if (!res.ok) throw new Error()
+      setSubmitted(true)
+    } catch {
+      setError('Meldung konnte nicht gesendet werden')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -54,7 +80,6 @@ export default function ReportForm({ type, targetId, onClose }: ReportFormProps)
     <div className={styles.container}>
       <p className={styles.title}>Grund der Meldung</p>
 
-      {/* Vorgefertigte Gründe */}
       <div className={styles.reasonList}>
         {REASONS[type].map(reason => (
           <button
@@ -68,7 +93,6 @@ export default function ReportForm({ type, targetId, onClose }: ReportFormProps)
         ))}
       </div>
 
-      {/* Optionale Beschreibung */}
       <textarea
         value={description}
         onChange={e => setDescription(e.target.value)}
@@ -77,7 +101,8 @@ export default function ReportForm({ type, targetId, onClose }: ReportFormProps)
         className={styles.textarea}
       />
 
-      {/* Aktionen */}
+      {error && <p className={styles.errorMsg}>{error}</p>}
+
       <div className={styles.actions}>
         <button onClick={onClose} className={styles.backBtn}>
           Zurück

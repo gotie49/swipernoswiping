@@ -132,3 +132,15 @@
   color: #EF4444;
   border-color: #EF4444;
 }
+
+.loadingText {
+  font-size: 14px;
+  color: #9CA3AF;
+  margin: 0;
+}
+
+.errorText {
+  font-size: 14px;
+  color: #EF4444;
+  margin: 0;
+}

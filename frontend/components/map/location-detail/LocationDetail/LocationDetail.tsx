@@ -2,6 +2,7 @@
 
 import type { Location } from '@/types/location'
 import { MdLocationOn, MdAccessTime } from 'react-icons/md'
+import { useLocationDetail } from '@/hooks/useLocationDetail'
 import RatingSection from '../RatingSection/RatingSection'
 import CommentSection from '../CommentSection/CommentSection'
 import ReportButton from '../ReportButton/ReportButton'
@@ -12,10 +13,10 @@ interface LocationDetailProps {
 }
 
 export default function LocationDetail({ location }: LocationDetailProps) {
+  const { detail, comments, isLoading, error, reload } = useLocationDetail(location.location_id)
+
   return (
     <div className={styles.container}>
-
-      {/* Name & Typ */}
       <div className={styles.nameRow}>
         <strong className={styles.name}>{location.name}</strong>
         {location.location_type && (
@@ -23,7 +24,6 @@ export default function LocationDetail({ location }: LocationDetailProps) {
         )}
       </div>
 
-      {/* Basis-Infos */}
       <div className={styles.infoList}>
         {location.address && (
           <p className={styles.infoText}>
@@ -44,19 +44,25 @@ export default function LocationDetail({ location }: LocationDetailProps) {
 
       <hr className={styles.divider} />
 
-      {/* Bewertungen */}
-      <RatingSection locationId={location.location_id} />
+      {isLoading && <p className={styles.loadingText}>Wird geladen...</p>}
+      {error && <p className={styles.errorText}>{error}</p>}
+
+      <RatingSection
+        locationId={location.location_id}
+        averageRating={detail?.average_rating ?? null}
+      />
 
       <hr className={styles.divider} />
 
-      {/* Kommentare */}
-      <CommentSection locationId={location.location_id} />
+      <CommentSection
+        locationId={location.location_id}
+        comments={comments}
+        onCommentAdded={reload}
+      />
 
       <hr className={styles.divider} />
 
-      {/* Ort melden */}
       <ReportButton locationId={location.location_id} />
-
     </div>
   )
 }

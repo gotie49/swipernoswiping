@@ -82,7 +82,7 @@ export default function AddLocationPage() {
           lat: geocodingResult.lat,
           lng: geocodingResult.lng,
           opening_hours: openingHours ? { text: openingHours } : null,
-          status: 'active',
+          status: 'pending',  // ← zur Moderation einreichen
         }),
       })
 
@@ -104,7 +104,6 @@ export default function AddLocationPage() {
     return (
       <div className={styles.container}>
         <div className={styles.successCard}>
-          <p className={styles.successIcon}>✅</p>
           <h2 className={styles.successTitle}>Ort eingereicht!</h2>
           <p className={styles.successText}>
             Dein Ort wurde zur Prüfung eingereicht und erscheint bald auf der Karte.
@@ -161,7 +160,7 @@ export default function AddLocationPage() {
           )}
           {geocodingError && !geocoding && (
             <p className={styles.geocodingError}>
-               Adresse nicht gefunden. Bitte genauer eingeben.
+              Adresse nicht gefunden. Bitte genauer eingeben.
             </p>
           )}
         </div>

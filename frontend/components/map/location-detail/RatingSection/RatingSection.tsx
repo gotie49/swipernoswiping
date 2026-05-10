@@ -4,20 +4,6 @@ import { useState } from 'react'
 import { useUser } from '@/context/UserContext'
 import styles from './RatingSection.module.css'
 
-interface Rating {
-  user: string
-  score: number
-}
-
-const EXAMPLE_RATINGS: Rating[] = [
-  { user: 'Anna K.',  score: 5 },
-  { user: 'Max M.',   score: 4 },
-  { user: 'Julia S.', score: 4 },
-  { user: 'Tom R.',   score: 3 },
-  { user: 'Lena B.',  score: 2 },
-  { user: 'Erik W.',  score: 1 },
-]
-
 function HalfStars({ score }: { score: number }) {
   return (
     <span className={styles.stars}>
@@ -42,53 +28,68 @@ function RatingBar({ star, count, total }: { star: number, count: number, total:
   )
 }
 
-export default function RatingSection({ locationId }: { locationId: string }) {
-  const { user } = useUser()
+interface RatingSectionProps {
+  locationId: string
+  averageRating: number | null
+}
+
+export default function RatingSection({ locationId, averageRating }: RatingSectionProps) {
+  const { user, token } = useUser()
   const [formOpen, setFormOpen] = useState(false)
   const [userScore, setUserScore] = useState(0)
   const [hovered, setHovered] = useState(0)
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const total = EXAMPLE_RATINGS.length
-  const avg = EXAMPLE_RATINGS.reduce((a, r) => a + r.score, 0) / total
-
-  const counts = [5, 4, 3, 2, 1].map(star => ({
-    star,
-    count: EXAMPLE_RATINGS.filter(r => Math.round(r.score) === star).length,
-  }))
+  const avg = averageRating ?? 0
+  const display = hovered || userScore
 
   async function handleSubmit() {
     if (userScore === 0) return
     setIsSubmitting(true)
-    // TODO: await fetch(`/api/locations/${locationId}/ratings`, { method: 'POST', body: JSON.stringify({ score: userScore }) })
-    await new Promise(r => setTimeout(r, 500))
-    setSubmitted(true)
-    setIsSubmitting(false)
-    setFormOpen(false)
-  }
+    setError(null)
 
-  const display = hovered || userScore
+    try {
+      // TODO: Ratings endpoint noch nicht vorhanden
+      // const res = await fetch(`/api/locations/${locationId}/ratings`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      //   },
+      //   body: JSON.stringify({ score: userScore }),
+      // })
+      // if (!res.ok) throw new Error()
+      await new Promise(r => setTimeout(r, 500))
+      setSubmitted(true)
+    } catch {
+      setError('Bewertung konnte nicht gespeichert werden')
+    } finally {
+      setIsSubmitting(false)
+      setFormOpen(false)
+    }
+  }
 
   return (
     <div className={styles.container}>
       <strong className={styles.sectionTitle}>Bewertungen</strong>
 
-      {/* Übersicht */}
       <div className={styles.overview}>
         <div className={styles.bars}>
-          {counts.map(({ star, count }) => (
-            <RatingBar key={star} star={star} count={count} total={total} />
+          {[5, 4, 3, 2, 1].map(star => (
+            <RatingBar key={star} star={star} count={0} total={0} />
           ))}
         </div>
         <div className={styles.avgBlock}>
-          <span className={styles.avgNumber}>{avg.toFixed(1)}</span>
-          <HalfStars score={avg} />
-          <span className={styles.avgCount}>{total} Bewertungen</span>
+          <span className={styles.avgNumber}>{avg > 0 ? avg.toFixed(1) : '–'}</span>
+          {avg > 0 && <HalfStars score={avg} />}
+          <span className={styles.avgCount}>
+            {avg > 0 ? 'Ø Bewertung' : 'Keine Bewertungen'}
+          </span>
         </div>
       </div>
 
-      {/* Bewertung abgeben */}
       {user ? (
         submitted ? (
           <p className={styles.successMsg}>Bewertung eingereicht!</p>
@@ -109,6 +110,7 @@ export default function RatingSection({ locationId }: { locationId: string }) {
                 </button>
               ))}
             </div>
+            {error && <p className={styles.errorMsg}>{error}</p>}
             <div className={styles.inputActions}>
               <button onClick={() => setFormOpen(false)} className={styles.cancelBtn}>
                 Zurück
